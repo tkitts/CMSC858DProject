@@ -34,6 +34,27 @@ def readEmbed(inFile: str):
 
     return output
 
+#this method returns the % of neighbors preserved from GT in adata
+def knnNeighbors(adata: ad.AnnData, GT: ad.AnnData):
+    GTNeighbors:sparse.csr.csr_matrix = GT.obsp['connectivities']
+    adataNeighbors:sparse.csr.csr_matrix = adata.obsp['connectivities']
+
+    GTz = GTNeighbors.nonzero()
+    GTz = zip(GTz[0], GTz[1])
+
+    adataz = adataNeighbors.nonzero()
+    adataz = list(zip(adataz[0], adataz[1]))
+
+    count = 0.0
+    total = 0.0
+    #for every coordinate that isn't zero
+    for (row, col) in GTz:
+        if (row, col) in adataz:
+            count += 1
+        total += 1
+    print(count)
+    print(total)
+    return (count/total)
 
 # this method generates GT clusters for n_neighbors
 def genGT():
